@@ -1,0 +1,7 @@
+{
+    "watch": ["serial-to-ubidots.js"],
+    "ext": "js",
+    "delay": "1000",
+    "restartable": "rs"
+  }
+  
