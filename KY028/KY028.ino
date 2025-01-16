@@ -15,7 +15,7 @@ DHT dht(ky015_pin, DHTTYPE);
 
 void setup() {
   // Iniciamos la comunicación serial
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Iniciando lectura de sensores...");
 
   // Inicializamos el sensor KY-015
@@ -30,23 +30,36 @@ void loop() {
   // Leemos el valor analógico del Ard-364
   int ard364_sensorValue = analogRead(ard364_AO);
   float ard364_temperature = ard364_sensorValue * (5.0 / 1023.0) * 100.0;
+  float air_pressure_pa = map(ky028_temperature, 50, 10, 60081, 103692);
 
   // Leemos temperatura y humedad del KY-015
   float ky015_temperature = dht.readTemperature();
-  float ky015_humidity = dht.readHumidity();
-  int  risk = map(ard364_sensorValue, 0, 1023, 1, 5);
+  float ky015_humidity = dht.readHumidity()-15-(.5*ky028_temperature);
+  
+  int risk = map(ard364_sensorValue, 0, 1000, 6, 0);
+  int fire_alert = -1;  
+
+  if (risk < 3) {
+    fire_alert = 0;  
+  } else if (risk == 3) {
+    fire_alert = 1;  
+  } else {
+    fire_alert = 2; 
+  }
+
+
   // Verificamos si la lectura del KY-015 es válida
   if (isnan(ky015_temperature) || isnan(ky015_humidity)) {
     Serial.println("{\"error\":\"Error al leer el KY-015\"}");
   } else {
     // Imprimimos los datos en formato JSON
-    Serial.print("{\"temp\":");
+    Serial.print("{\"air_pressure_pa\":");
+    Serial.print(air_pressure_pa);
+    Serial.print(", \"fire_alert_status\":");
+    Serial.print(fire_alert);
+    Serial.print(", \"temperature_c\":");
     Serial.print(ky028_temperature, 2);
-    Serial.print(", \"flame\":");
-    Serial.print(risk);
-    Serial.print(", \"dht_t\":");
-    Serial.print(ky015_temperature, 2);
-    Serial.print(", \"dht_h\":");
+    Serial.print(", \"humidity_percent\":");
     Serial.print(ky015_humidity, 2);
     Serial.println("}");
   }
