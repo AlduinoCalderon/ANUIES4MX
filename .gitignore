@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Archivos de dependencias de npm
+package-lock.json
+yarn.lock
+
+# Directorios del sistema operativo
+.DS_Store    # macOS
+Thumbs.db    # Windows
+
+# Archivos de configuración del IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Archivos temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencias de producción de NPM (si usas un entorno de despliegue)
+dist/
+build/
